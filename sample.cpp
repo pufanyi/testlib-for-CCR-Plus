@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
             quitf(_wa, "0\nThe answer is wrong: expected = %f, found = %f", jans, pans);
 
     }
-    quitf(_ok, "0\nThe answer is correct.");
+    quitf(_ok, "1\nThe answer is correct.");
     return 0;
 
 }
