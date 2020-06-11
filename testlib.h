@@ -1965,7 +1965,7 @@ void InStream::reset() {
 	if (!stdfile)
 		if (NULL == (file = __testlib_fopen(name.c_str(), "rb"))) {
 			if (mode == _output)
-				quits(_pe, std::string("File not found: \"") + name + "\"");
+				quits(_pe, std::string("0\nFile not found: \"") + name + "\"");
 		}
 
 	opened = true;
@@ -2024,10 +2024,10 @@ char InStream::readChar(char c) {
 	char found = readChar();
 	if (c != found) {
 		if (!isEoln(found))
-			quit(_pe, ("Unexpected character '" + std::string(1,
+			quit(_pe, ("0\nUnexpected character '" + std::string(1,
 			           found) + "', but '" + std::string(1, c) + "' expected").c_str());
 		else
-			quit(_pe, ("Unexpected character " + ("#" + vtos(int(found))) + ", but '" +
+			quit(_pe, ("0\nUnexpected character " + ("#" + vtos(int(found))) + ", but '" +
 			           std::string(1, c) + "' expected").c_str());
 	}
 	return found;
@@ -2065,7 +2065,7 @@ void InStream::readWordTo(std::string& result) {
 		quit(_unexpected_eof, "Unexpected end of file - token expected");
 
 	if (isBlanks(cur))
-		quit(_pe, "Unexpected white-space - token expected");
+		quit(_pe, "0\nUnexpected white-space - token expected");
 
 	result.clear();
 
@@ -2100,10 +2100,10 @@ std::string InStream::readWord(const pattern& p,
 	readWordTo(_tmpReadToken);
 	if (!p.matches(_tmpReadToken)) {
 		if (variableName.empty())
-			quit(_wa, ("Token \"" + __testlib_part(_tmpReadToken) +
+			quit(_wa, ("0\nToken \"" + __testlib_part(_tmpReadToken) +
 			           "\" doesn't correspond to pattern \"" + p.src() + "\"").c_str());
 		else
-			quit(_wa, ("Token parameter [name=" + variableName + "] equals to \"" +
+			quit(_wa, ("0\nToken parameter [name=" + variableName + "] equals to \"" +
 			           __testlib_part(_tmpReadToken) + "\", doesn't correspond to pattern \"" + p.src()
 			           + "\"").c_str());
 	}
@@ -2130,10 +2130,10 @@ void InStream::readWordTo(std::string& result, const pattern& p,
 	readWordTo(result);
 	if (!p.matches(result)) {
 		if (variableName.empty())
-			quit(_wa, ("Token \"" + __testlib_part(result) +
+			quit(_wa, ("0\nToken \"" + __testlib_part(result) +
 			           "\" doesn't correspond to pattern \"" + p.src() + "\"").c_str());
 		else
-			quit(_wa, ("Token parameter [name=" + variableName + "] equals to \"" +
+			quit(_wa, ("0\nToken parameter [name=" + variableName + "] equals to \"" +
 			           __testlib_part(result) + "\", doesn't correspond to pattern \"" + p.src() +
 			           "\"").c_str());
 	}
@@ -2217,14 +2217,14 @@ static inline double stringToDouble(InStream& in, const char* buffer) {
 			if (buffer[i] == '.')
 				decimalPointCount++;
 		} else
-			in.quit(_pe, ("Expected double, but \"" + __testlib_part(
+			in.quit(_pe, ("0\nExpected double, but \"" + __testlib_part(
 			                  buffer) + "\" found").c_str());
 	}
 
 	// If for sure is not a number in standard notation or in e-notation.
 	if (digitCount == 0 || minusCount > 2 || plusCount > 2 || decimalPointCount > 1
 	        || eCount > 1)
-		in.quit(_pe, ("Expected double, but \"" + __testlib_part(
+		in.quit(_pe, ("0\nExpected double, but \"" + __testlib_part(
 		                  buffer) + "\" found").c_str());
 
 	char* suffix = new char[length + 1];
@@ -2234,11 +2234,11 @@ static inline double stringToDouble(InStream& in, const char* buffer) {
 
 	if (scanned == 1 || (scanned == 2 && empty)) {
 		if (__testlib_isNaN(retval) || __testlib_isInfinite(retval))
-			in.quit(_pe, ("Expected double, but \"" + __testlib_part(
+			in.quit(_pe, ("0\nExpected double, but \"" + __testlib_part(
 			                  buffer) + "\" found").c_str());
 		return retval;
 	} else
-		in.quit(_pe, ("Expected double, but \"" + __testlib_part(
+		in.quit(_pe, ("0\nExpected double, but \"" + __testlib_part(
 		                  buffer) + "\" found").c_str());
 }
 
@@ -2257,35 +2257,35 @@ static inline double stringToStrictDouble(InStream& in, const char* buffer,
 	size_t length = strlen(buffer);
 
 	if (length == 0 || length > 1000)
-		in.quit(_pe, ("Expected strict double, but \"" + __testlib_part(
+		in.quit(_pe, ("0\nExpected strict double, but \"" + __testlib_part(
 		                  buffer) + "\" found").c_str());
 
 	if (buffer[0] != '-' && (buffer[0] < '0' || buffer[0] > '9'))
-		in.quit(_pe, ("Expected strict double, but \"" + __testlib_part(
+		in.quit(_pe, ("0\nExpected strict double, but \"" + __testlib_part(
 		                  buffer) + "\" found").c_str());
 
 	int pointPos = -1;
 	for (size_t i = 1; i + 1 < length; i++) {
 		if (buffer[i] == '.') {
 			if (pointPos > -1)
-				in.quit(_pe, ("Expected strict double, but \"" + __testlib_part(
+				in.quit(_pe, ("0\nExpected strict double, but \"" + __testlib_part(
 				                  buffer) + "\" found").c_str());
 			pointPos = int(i);
 		}
 		if (buffer[i] != '.' && (buffer[i] < '0' || buffer[i] > '9'))
-			in.quit(_pe, ("Expected strict double, but \"" + __testlib_part(
+			in.quit(_pe, ("0\nExpected strict double, but \"" + __testlib_part(
 			                  buffer) + "\" found").c_str());
 	}
 
 	if (buffer[length - 1] < '0' || buffer[length - 1] > '9')
-		in.quit(_pe, ("Expected strict double, but \"" + __testlib_part(
+		in.quit(_pe, ("0\nExpected strict double, but \"" + __testlib_part(
 		                  buffer) + "\" found").c_str());
 
 	int afterDigitsCount = (pointPos == -1 ? 0 : int(length) - pointPos - 1);
 	if (afterDigitsCount < minAfterPointDigitCount
 	        || afterDigitsCount > maxAfterPointDigitCount)
 		in.quit(_pe,
-		        ("Expected strict double with number of digits after point in range ["
+		        ("0\nExpected strict double with number of digits after point in range ["
 		         + vtos(minAfterPointDigitCount)
 		         + ","
 		         + vtos(maxAfterPointDigitCount)
@@ -2300,12 +2300,12 @@ static inline double stringToStrictDouble(InStream& in, const char* buffer,
 		}
 
 	if (firstDigitPos > 1 || firstDigitPos == -1)
-		in.quit(_pe, ("Expected strict double, but \"" + __testlib_part(
+		in.quit(_pe, ("0\nExpected strict double, but \"" + __testlib_part(
 		                  buffer) + "\" found").c_str());
 
 	if (buffer[firstDigitPos] == '0' && firstDigitPos + 1 < int(length)
 	        && buffer[firstDigitPos + 1] >= '0' && buffer[firstDigitPos + 1] <= '9')
-		in.quit(_pe, ("Expected strict double, but \"" + __testlib_part(
+		in.quit(_pe, ("0\nExpected strict double, but \"" + __testlib_part(
 		                  buffer) + "\" found").c_str());
 
 	char* suffix = new char[length + 1];
@@ -2315,11 +2315,11 @@ static inline double stringToStrictDouble(InStream& in, const char* buffer,
 
 	if (scanned == 1 || (scanned == 2 && empty)) {
 		if (__testlib_isNaN(retval) || __testlib_isInfinite(retval))
-			in.quit(_pe, ("Expected double, but \"" + __testlib_part(
+			in.quit(_pe, ("0\nExpected double, but \"" + __testlib_part(
 			                  buffer) + "\" found").c_str());
 		return retval;
 	} else
-		in.quit(_pe, ("Expected double, but \"" + __testlib_part(
+		in.quit(_pe, ("0\nExpected double, but \"" + __testlib_part(
 		                  buffer) + "\" found").c_str());
 }
 
@@ -2334,7 +2334,7 @@ static inline long long stringToLongLong(InStream& in, const char* buffer) {
 		minus = true;
 
 	if (length > 20)
-		in.quit(_pe, ("Expected integer, but \"" + __testlib_part(
+		in.quit(_pe, ("0\nExpected integer, but \"" + __testlib_part(
 		                  buffer) + "\" found").c_str());
 
 	long long retval = 0LL;
@@ -2349,17 +2349,17 @@ static inline long long stringToLongLong(InStream& in, const char* buffer) {
 			processingZeroes = false;
 
 		if (buffer[i] < '0' || buffer[i] > '9')
-			in.quit(_pe, ("Expected integer, but \"" + __testlib_part(
+			in.quit(_pe, ("0\nExpected integer, but \"" + __testlib_part(
 			                  buffer) + "\" found").c_str());
 		retval = retval * 10 + (buffer[i] - '0');
 	}
 
 	if (retval < 0)
-		in.quit(_pe, ("Expected integer, but \"" + __testlib_part(
+		in.quit(_pe, ("0\nExpected integer, but \"" + __testlib_part(
 		                  buffer) + "\" found").c_str());
 
 	if ((zeroes > 0 && (retval != 0 || minus)) || zeroes > 1)
-		in.quit(_pe, ("Expected integer, but \"" + __testlib_part(
+		in.quit(_pe, ("0\nExpected integer, but \"" + __testlib_part(
 		                  buffer) + "\" found").c_str());
 
 	retval = (minus ? -retval : +retval);
@@ -2370,7 +2370,7 @@ static inline long long stringToLongLong(InStream& in, const char* buffer) {
 	if (equals(retval, buffer))
 		return retval;
 	else
-		in.quit(_pe, ("Expected int64, but \"" + __testlib_part(
+		in.quit(_pe, ("0\nExpected int64, but \"" + __testlib_part(
 		                  buffer) + "\" found").c_str());
 }
 
@@ -3248,4 +3248,3 @@ NORETURN void expectedButFound<long double>(TResult result,
 }
 
 #endif
-
