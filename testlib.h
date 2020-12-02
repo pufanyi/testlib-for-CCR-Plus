@@ -1876,7 +1876,8 @@ NORETURN void InStream::quit(TResult result, const char* msg) {
 		resultFile = std::fopen(resultName.c_str(), "w");
 		if (resultFile == NULL)
 			quit(_fail, "0\nCan not write to the result file");
-		std::fprintf(resultFile, "%s", msg);
+		if (result != _ok) std::fprintf(resultFile, "0\n%s", msg);
+		else std::fprintf(resultFile, "1\n%s", msg);
 		if (NULL == resultFile || fclose(resultFile) != 0)
 			quit(_fail, "0\nCan not write to the result file");
 	}
