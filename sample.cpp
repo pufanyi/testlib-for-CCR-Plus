@@ -11,10 +11,12 @@ int main(int argc, char* argv[]) {
         ans.readEoln();
 
         if (fabs(pans - jans)>0.01)
-            quitf(_wa, "0\nThe answer is wrong: expected = %f, found = %f", jans, pans);
+            quitf(_wa, "The answer is wrong: expected = %f, found = %f", jans, pans);
 
     }
-    quitf(_ok, "1\nThe answer is correct.");
+    quitf(_ok, "The answer is correct.");
+    
+    //quitp(0.5,"Partially Correct get %d percent", 50);
     return 0;
 
 }
